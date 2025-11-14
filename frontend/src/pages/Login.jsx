@@ -17,6 +17,7 @@ const Login = () => {
     if (adminToken) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${adminToken}`;
       navigate('/');
+      alert('You are already logged in!');
     }
   }, [navigate]);
 
@@ -33,14 +34,12 @@ const Login = () => {
         password,
       });
 
-     
       if (data.success) {
     
         localStorage.setItem('adminUser', JSON.stringify(data.user));
         localStorage.setItem('adminToken', data.token);
 
         axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-
         navigate('/');
       }
     } catch (err) {
