@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from '../components/Modal';
 import CreateProductForm from './CreateProductForm';
+import EditProductForm from './EditProductForm';
 
 const ProductListPage = () => {
     const [products, setProducts] = useState([]);
@@ -13,6 +14,9 @@ const ProductListPage = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
     const [deleteLoading, setDeleteLoading] = useState(false);
+
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [productToEdit, setProductToEdit] = useState(null);
 
     const fetchProducts = async () => {
         try {
@@ -37,13 +41,11 @@ const ProductListPage = () => {
         fetchProducts();
     };
 
-    // When user clicks the red "Delete" button in the table
     const openDeleteModal = (product) => {
         setProductToDelete(product);
         setIsDeleteModalOpen(true);
     };
 
-    // When user closes the delete modal (clicks Cancel or X)
     const closeDeleteModal = () => {
         setProductToDelete(null);
         setIsDeleteModalOpen(false);
@@ -58,9 +60,9 @@ const ProductListPage = () => {
             fetchProducts();
 
         } catch (err) {
-            // Handle delete error (optional: show error in modal)
+            // Handle delete error 
             console.error('Failed to delete product', err);
-            alert('Failed to delete product. Please try again.'); // Simple alert for now
+            alert('Failed to delete product. Please try again.');
         } finally {
             setDeleteLoading(false);
         }
@@ -81,8 +83,21 @@ const ProductListPage = () => {
             </div>
         );
     }
-    console.log('produvts', products);
 
+    const openEditModal = (product) => {
+        setProductToEdit(product);
+        setIsEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setProductToEdit(null);
+        setIsEditModalOpen(false);
+    };
+
+    const handleEditSuccess = () => {
+        closeEditModal();
+        fetchProducts();
+    };
 
     return (
         <>
@@ -126,7 +141,7 @@ const ProductListPage = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.stock}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button className="text-blue-600 hover:text-blue-900 mr-3 cursor-pointer">Edit</button>
+                                            <button className="text-blue-600 hover:text-blue-900 mr-3 cursor-pointer" onClick={() => openEditModal(product)}>Edit</button>
                                             <button
                                                 onClick={() => openDeleteModal(product)}
                                                 className="text-red-600 hover:text-red-900 cursor-pointer"
@@ -170,7 +185,7 @@ const ProductListPage = () => {
                         <button
                             type="button"
                             onClick={closeDeleteModal}
-                            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+                            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 cursor-pointer"
                         >
                             Cancel
                         </button>
@@ -178,12 +193,24 @@ const ProductListPage = () => {
                             type="button"
                             disabled={deleteLoading}
                             onClick={handleConfirmDelete}
-                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-red-300"
+                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-red-300 cursor-pointer"
                         >
                             {deleteLoading ? 'Deleting...' : 'Confirm Delete'}
                         </button>
                     </div>
                 </div>
+            </Modal>
+
+            <Modal
+                isOpen={isEditModalOpen}
+                onClose={closeEditModal}
+                title="Edit Product"
+            >
+                <EditProductForm
+                    product={productToEdit}
+                    onSuccess={handleEditSuccess}
+                    onClose={closeEditModal}
+                />
             </Modal>
         </>
     );
