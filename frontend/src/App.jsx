@@ -3,6 +3,7 @@ import Login from './pages/Login';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProductListPage from './pages/ProductListPage';
+import Dashboard from './pages/Dashboard';
 
 function App() {
 
@@ -13,7 +14,7 @@ function App() {
         <ProtectedRoute>
           <Layout />
         </ProtectedRoute>}>
-        {/* <Route index element={<DashboardPage />} /> */}
+        <Route index element={<Dashboard />} />
         <Route path="products" element={<ProductListPage />} />
         {/* <Route path="orders" element={<OrdersPage />} /> */}
       </Route>

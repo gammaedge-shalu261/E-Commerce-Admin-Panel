@@ -1,20 +1,19 @@
-// middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
 exports.protect = async (req, res, next) => {
     let token;
-
-    // Check if the 'Authorization' header exists and starts with 'Bearer'
+    console.log(' req.headers.authorization', req.headers.authorization);
+    console.log('req.headers.authorization.startsWith', req.headers.authorization.startsWith('Bearer'));
+    
+    
     if (
         req.headers.authorization &&
         req.headers.authorization.startsWith('Bearer')
     ) {
         try {
-            // 1. Get the token from the header (splitting 'Bearer TOKEN_STRING')
             token = req.headers.authorization.split(' ')[1];
 
-            // 2. Verify the token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             console.log('decoded', decoded);
 
